@@ -1,0 +1,14 @@
+export HOMEUSER=kali
+export HOMEDIR=/home/kali
+export STORAGEDIR=${HOMEDIR}/zi-targets
+
+export GITHUBTOKEN=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
+export DISCORDWEBHOOKURL=
+
+export CUSTOMHEADER=''
+export NUMBEROFTHREADS=20
+export REQUESTSPERSECOND=5
+
+export GOPATH=$HOMEDIR/go
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$HOME/go/bin
+export GO111MODULE=on
