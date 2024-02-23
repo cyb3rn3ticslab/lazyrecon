@@ -345,27 +345,27 @@ gospidertest(){
   fi
 }
 
-# pagefetcher(){
-#   if [[ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]]; then
-#     SCOPE=$1
-#     echo
-#     # echo "[$(date +%H:%M:%S)] [page-fetch] Fetch page's DOM..."
-#     # < $TARGETDIR/3-all-subdomain-live-scheme.txt page-fetch --no-third-party --exclude image/ --exclude css/ -o $TARGETDIR/page-fetched 1> /dev/null
-#     # grep -horE "https?:[^\"\\'> ]+|www[.][^\"\\'> ]+" $TARGETDIR/page-fetched | sort -u > $TARGETDIR/page-fetched/pagefetcher_output.txt
+pagefetcher(){
+  if [[ -s $TARGETDIR/3-all-subdomain-live-scheme.txt ]]; then
+    SCOPE=$1
+    echo
+    # echo "[$(date +%H:%M:%S)] [page-fetch] Fetch page's DOM..."
+    # < $TARGETDIR/3-all-subdomain-live-scheme.txt page-fetch --no-third-party --exclude image/ --exclude css/ -o $TARGETDIR/page-fetched 1> /dev/null
+    # grep -horE "https?:[^\"\\'> ]+|www[.][^\"\\'> ]+" $TARGETDIR/page-fetched | sort -u > $TARGETDIR/page-fetched/pagefetcher_output.txt
 
-#     if [[ -z "$single" ]]; then
-#       # extract domains
-#       < $TARGETDIR/page-fetched/pagefetcher_output.txt unfurl --unique domains \
-#         | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" \
-#         | sort -u \
-#         | $HTTPXCALL \
-#         | tee $TARGETDIR/pagefetcher-subdomain-live-scheme.txt
+    if [[ -z "$single" ]]; then
+      # extract domains
+      < $TARGETDIR/page-fetched/pagefetcher_output.txt unfurl --unique domains \
+        | grep -E "(([[:alnum:][:punct:]]+)+)?[.]?$1" \
+        | sort -u \
+        | $HTTPXCALL \
+        | tee $TARGETDIR/pagefetcher-subdomain-live-scheme.txt
 
-#       [[ -s $TARGETDIR/pagefetcher-subdomain-live-scheme.txt ]] && sort -u $TARGETDIR/3-all-subdomain-live-scheme.txt $TARGETDIR/pagefetcher-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
-#     fi
-#     echo "[$(date +%H:%M:%S)] [page-fetch] done."
-#   fi
-# }
+      [[ -s $TARGETDIR/pagefetcher-subdomain-live-scheme.txt ]] && sort -u $TARGETDIR/3-all-subdomain-live-scheme.txt $TARGETDIR/pagefetcher-subdomain-live-scheme.txt -o $TARGETDIR/3-all-subdomain-live-scheme.txt
+    fi
+    echo "[$(date +%H:%M:%S)] [page-fetch] done."
+  fi
+}
 
 screenshots(){
   if [ -s "$TARGETDIR"/3-all-subdomain-live-scheme.txt ]; then
@@ -680,9 +680,10 @@ sqlmaptest(){
 }
 
 sqli_test(){
+
   gf sqli $CUSTOMSUBDOMAINSWORDLIST > sqli_endpoints.txt
 
-  uro -l sqli_endpoints.txt -o sqli_endpoints_uniq.txt
+  uro -i sqli_endpoints.txt -o sqli_endpoints_uniq.txt
 
   sqlmap -m sqli_endpoints_uniq.txt --batch --random-agent --level=3 --risk=3 | tee sqlmap_output.txt
 
@@ -777,12 +778,12 @@ recon(){
   wait $PID_HTTPX
   echo "checkhttprobe DONE"
 
-  if [[ -n "$fuzz" || -n "$brute" || -n "$wildcard" ]]; then
+  #if [[ -n "$fuzz" || -n "$brute" || -n "$wildcard" ]]; then
     gospidertest $1
     custompathlist $1
     linkfindercrawling $1
     secretfinder $1
-  fi
+  #fi
 
   screenshots $1 &
   PID_SCREEN=$!
@@ -798,9 +799,9 @@ recon(){
 
 
   if [[ -n "$fuzz" || -n "$wildcard" ]]; then
-    # ssrftest $1
-    # lfitest $1
-    # sqlmaptest $1
+    ssrftest $1
+    lfitest $1
+    sqlmaptest $1
     sqli_test $1
   fi
 

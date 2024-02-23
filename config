@@ -1,5 +1,5 @@
-export HOMEUSER=kali
-export HOMEDIR=/home/kali
+export HOMEUSER=cyberkali
+export HOMEDIR=/home/cyberkali
 export STORAGEDIR=${HOMEDIR}/zi-targets
 
 export GITHUBTOKEN=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
